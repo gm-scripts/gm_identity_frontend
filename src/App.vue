@@ -38,8 +38,8 @@
           type="date"
           name="birthdate"
           id="birthdate"
-          :value="today"
           :max="today"
+          v-model="characterData.birthdate"
         />
       </div>
     </div>
@@ -87,7 +87,7 @@ export default {
         },
       ],
       characterData: {
-        names: {
+        name: {
           first: "",
           last: "",
         },
@@ -122,6 +122,7 @@ export default {
         this.characterData.gender = data.buttonSelected;
       }
     });
+    this.characterData.birthdate = this.today;
   },
 };
 </script>
