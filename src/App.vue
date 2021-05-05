@@ -1,5 +1,23 @@
 <template>
-  <div id="ui-container">
+  <div
+    id="ui-container"
+    :class="{
+      closed: !windowOpen,
+    }"
+    :style="{
+      '--scale': cssConf.scale,
+      '--border-radius-scale': cssConf.borderRadScale,
+      '--bg-primary': cssConf.bgPrimary,
+      '--bg-secondary': cssConf.bgSecondary,
+      '--bg-tertiary': cssConf.bgTertiary,
+      '--color-primary': cssConf.colorPrimary,
+      '--color-secondary': cssConf.colorSecondary,
+      '--color-error': cssConf.colorError,
+      '--text-primary': cssConf.textPrimary,
+      '--text-secondary': cssConf.textSecondary,
+      '--text-placeholder': cssConf.textPlaceholder,
+    }"
+  >
     <div class="identity-header">
       <span class="welcomer">{{ lang.welcomeText }}</span
       ><br /><span class="server-name">{{ lang.serverName }}</span>
@@ -47,7 +65,7 @@
       <label>{{ lang.labelGenderSelector }}</label>
       <RadioGroup :buttons="selectGender"></RadioGroup>
     </div>
-    <div class="signup-btn">{{ lang.labelSignUp }}</div>
+    <div class="signup-btn" @click="submit">{{ lang.labelSignUp }}</div>
   </div>
 </template>
 
@@ -70,7 +88,20 @@ export default {
         labelLastName: "Last name:",
         labelBirthdate: "Birthdate:",
         labelGenderSelector: "Gender: ",
-        labelSignUp: "Register",
+        labelSignUp: "Create character",
+      },
+      cssConf: {
+        scale: 1,
+        borderRadScale: 1,
+        bgPrimary: "#4a4a55",
+        bgSecondary: "#383844",
+        bgTertiary: "#242438",
+        colorPrimary: "#23bf7c",
+        colorSecondary: "#299465",
+        colorError: "#cc3333",
+        textPrimary: "#f7f7ff",
+        textSecondary: "#dfdfef",
+        textPlaceholder: "#878797",
       },
       selectGender: [
         {
@@ -94,6 +125,7 @@ export default {
         birthdate: "",
         gender: "",
       },
+      windowOpen: true,
     };
   },
   computed: {
@@ -115,7 +147,31 @@ export default {
       return dateFormatted;
     },
   },
+  methods: {
+    submit() {
+      fetch("https://gm_identity/create", {
+        method: "post",
+        body: JSON.stringify(this.characterData),
+      });
+      this.closeWindow();
+    },
+    closeWindow() {
+      this.windowOpen = false;
+    },
+  },
   mounted() {
+    fetch("https://gm_identity/lang", {
+      method: "post",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        this.lang = { ...data };
+      });
+    fetch("https://gm_identity/css", { method: "post" })
+      .then((res) => res.json())
+      .then((data) => {
+        this.cssConf = { ...data };
+      });
     window.addEventListener("message", (e) => {
       let data = e.data;
       if (data.type === "GM-IdentityGenderRadioGroupSelectionBroadcast") {
@@ -143,6 +199,8 @@ export default {
   --text-primary: #f7f7ff;
   --text-secondary: #dfdfef;
   --text-placeholder: #878797;
+
+  user-select: none;
 
   height: calc(60vh * var(--scale));
   width: calc(55vh * var(--scale));
@@ -254,6 +312,11 @@ export default {
     line-height: calc(3.5vh * var(--scale));
     text-align: center;
     cursor: pointer;
+  }
+  &.closed {
+    opacity: 0;
+    transform: scale(1.1);
+    transition: all 0.2s;
   }
 }
 * {
