@@ -153,7 +153,6 @@ export default {
         method: "post",
         body: JSON.stringify(this.characterData),
       });
-      this.closeWindow();
     },
   },
   mounted() {
