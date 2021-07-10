@@ -81,11 +81,10 @@ export default {
       lang: {
         welcomeText: "Welcome to",
         serverName: "SampleServer",
-        placeholderName: "Name",
-        placeholderLastName: "Last name",
-        placeholderBirthdate: "Birthdate",
         labelName: "Name:",
         labelLastName: "Last name:",
+        placeholderName: "Name",
+        placeholderLastName: "Last name",
         labelBirthdate: "Birthdate:",
         labelGenderSelector: "Gender: ",
         labelSignUp: "Create character",
@@ -143,7 +142,7 @@ export default {
         minimumIntegerDigits: 4,
         useGrouping: false,
       });
-      let dateFormatted = `${day}/${month}/${year}`;
+      let dateFormatted = `${year}-${month}-${day}`;
       return dateFormatted;
     },
   },
@@ -161,7 +160,20 @@ export default {
     })
       .then((res) => res.json())
       .then((data) => {
-        this.lang = { ...data };
+        this.lang = {
+          welcomeText: data.welcomeText,
+          serverName: data.serverName,
+          labelName: data.labelName,
+          labelLastName: data.labelLastName,
+          placeholderName: data.placeholderName,
+          placeholderLastName: data.placeholderLastName,
+          labelBirthdate: data.labelBirthdate,
+          labelGenderSelector: data.labelGenderSelector,
+          labelSignUp: data.labelSignUp,
+        };
+        this.selectGender[0].data = data.genderMale;
+        this.selectGender[1].data = data.genderFemale;
+        this.selectGender[2].data = data.genderNonBinary;
       });
     fetch("https://gm_identity/css", { method: "post" })
       .then((res) => res.json())
@@ -280,8 +292,6 @@ export default {
     margin-left: calc(5vh * var(--scale));
     position: relative;
     top: calc(5vh * var(--scale));
-    #birthdate {
-    }
   }
 
   .gender-selecter {
