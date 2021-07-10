@@ -125,7 +125,7 @@ export default {
         birthdate: "",
         gender: "",
       },
-      windowOpen: true,
+      windowOpen: false,
     };
   },
   computed: {
@@ -143,7 +143,7 @@ export default {
         minimumIntegerDigits: 4,
         useGrouping: false,
       });
-      let dateFormatted = `${year}-${month}-${day}`;
+      let dateFormatted = `${day}/${month}/${year}`;
       return dateFormatted;
     },
   },
@@ -154,9 +154,6 @@ export default {
         body: JSON.stringify(this.characterData),
       });
       this.closeWindow();
-    },
-    closeWindow() {
-      this.windowOpen = false;
     },
   },
   mounted() {
@@ -176,6 +173,8 @@ export default {
       let data = e.data;
       if (data.type === "GM-IdentityGenderRadioGroupSelectionBroadcast") {
         this.characterData.gender = data.buttonSelected;
+      } else if (data.type === "enableui") {
+        this.windowOpen = data.enable;
       }
     });
     this.characterData.birthdate = this.today;

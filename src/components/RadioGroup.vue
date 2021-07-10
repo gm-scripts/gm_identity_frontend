@@ -31,7 +31,7 @@ export default {
     select(index) {
       this.clearRadios();
       this.radios[index] = true;
-      let genders = ["male", "female", "non-binary"];
+      let genders = ["m", "f", "n"];
       postMessage({
         type: "GM-IdentityGenderRadioGroupSelectionBroadcast",
         buttonSelected: genders[index],
